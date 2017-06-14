@@ -4,7 +4,7 @@
     <h1>{{id}} - {{years}}</h1>
     <h1>{{ msg }}</h1>
     <h2>Essential Links</h2>
-    <img src="./logo.png" alt="">
+    <img src="m-header/logo@2x.png" alt="">
     <ul>
       <li><a href="https://vuejs.org" target="_blank">Core Docs</a></li>
       <li><a href="https://forum.vuejs.org" target="_blank">Forum</a></li>

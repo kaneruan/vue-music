@@ -5,8 +5,8 @@
   </div>
 </template>
 <style lang="stylus">
-  @import "../../common/stylus/variable.styl"
-  @import "../../common/stylus/mixin.styl"
+  @import "~common/stylus/variable.styl"
+  @import "~common/stylus/mixin.styl"
   .m-header
     position: relative
     height: 44px
@@ -24,6 +24,8 @@
       background-size 30px 32px
     .text
       display inline-block
+      font-size $font-size-large-x
       vertical-align top
       line-height 44px
+      color $color-text
 </style>
