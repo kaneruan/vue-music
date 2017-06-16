@@ -7,7 +7,7 @@
            <slider v-if="recommends.length">
              <div v-for="item in recommends" class="item">
                <a class="item-img-container" :href="item.linkUrl">
-                 <img class='item-img' v-lazy="item.picUrl" alt="图片">
+                 <img class='item-img needsclick' v-lazy="item.picUrl" alt="图片">
                </a>
              </div>
            </slider>
