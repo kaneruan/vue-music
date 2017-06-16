@@ -12,11 +12,18 @@
           </slider>
         </div>
         <div class="recommend-list">
-          <h1 class="list-title">
+          <h3 class="list-title">热门歌单推荐</h3>
             <ul>
-              <li></li>
+              <li v-for="item in discList" class="item">
+                <div class="icon">
+                  <img :src="item.imgurl" width="60" height="60" alt="">
+                </div>
+                <div class="text">
+                  <h2 class="name" v-html="item.creator.name"></h2>
+                  <div class="desc" v-html="item.dissname"></div>
+                </div>
+              </li>
             </ul>
-          </h1>
         </div>
       </div>
     </div>
@@ -31,7 +38,8 @@
     name: 'recommend',
     data(){
       return {
-        recommends: {}
+        recommends: [],
+        discList: []
       }
     },
     created() {
@@ -48,8 +56,8 @@
       },
       _getDiscList() {
         getDiscList().then((res) => {
-          if(res.code === ERR_OK) {
-            console.log(res.data)
+          if (res.code === ERR_OK) {
+            this.discList = res.data.list
           }
         })
       }
@@ -60,6 +68,7 @@
   }
 </script>
 <style lang="stylus">
+  @import "~common/stylus/variable"
   .recommend
     position fixed
     width 100%
@@ -85,9 +94,11 @@
           align-items center
           padding 0 20px 20px 20px
           .icon
+            display flex
+            align-items center
             flex 0 0 60px
             width 60px
-            padding-left 20px
+            padding-right 20px
           .text
             display flex
             flex-direction column
@@ -98,6 +109,8 @@
             font-size $font-size-medium
             .name
               margin-bottom 10px
+              color $color-text
+            .desc
               color $color-text-d
         .loading-container
           position absolute
