@@ -25,9 +25,10 @@
 <script>
   import {getRecommend} from 'api/recommend.js'
   import{ERR_OK} from 'api/config.js'
-  import Slider from 'base/slider/slide'
+  import Slider from 'base/slider/slider'
 
   export default {
+    name: 'recommend',
     data(){
       return {
         recommends: {}
