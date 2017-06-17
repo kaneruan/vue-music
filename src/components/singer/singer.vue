@@ -8,6 +8,8 @@
 <script>
   import {getSingerList} from 'api/singer'
   import{ERR_OK} from 'api/config.js'
+  import Singer from 'common/js/singer'
+
   const HOT_NAME = '热门'
   const HOT_SINGER_LEN = 10
   export default {
@@ -23,7 +25,8 @@
       _getSingerList() {
         getSingerList().then((res) => {
           if (res.code === ERR_OK) {
-            this.singers = this.sortList(res.data.list)
+            this.singers = res.data.list
+            console.log(this._normalizeSinger(this.singers))
           }
         })
       },
@@ -32,20 +35,43 @@
           return pre.Findex.charCodeAt() - current.Findex.charCodeAt()
         })
       },
-      _normalizeSinger() {
+      // 初始化singer数据结构
+      _normalizeSinger(list) {
         let map = {
           hot: {
             title: HOT_NAME,
             items: []
           }
         }
-        map.forEach((ele, index) => {
+        list.forEach((ele, index) => {
           if (index < HOT_SINGER_LEN) {
-            map.hot.items.push({
-
-            })
+            map.hot.items.push(new Singer({
+              id: ele.Fsinger_mid,
+              name: ele.Fsinger_name
+            }))
           }
+          const key = ele.Findex
+          if (!map[key]) {
+            map[key] = {
+              title: key,
+              items: []
+            }
+          }
+          map[key].items.push(new Singer({
+            id: ele.Fsinger_mid,
+            name: ele.Fsinger_name
+          }))
+
         })
+        // 将对象转化为数组，以便vue遍历
+        let listArr = []
+        listArr.push(map.hot) && (delete map.hot)
+        Object.keys(map).sort((pre, current) => {
+          return pre.charCodeAt() - current.charCodeAt()
+        }).forEach((ele) => {
+          listArr.push(map[ele])
+        })
+
       }
     }
   }
