@@ -5,11 +5,6 @@
     <keep-alive>
       <router-view ></router-view>
     </keep-alive>
-     <!--动态keep-alive-->
-    <!--<keep-alive >-->
-      <!--<router-view v-if="$route.meta.keepAlive"></router-view>-->
-    <!--</keep-alive>-->
-    <!--<router-view v-if='!$route.meta.keepAlive'></router-view>-->
   </div>
 </template>
 
