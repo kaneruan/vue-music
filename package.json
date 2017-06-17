@@ -1,7 +1,7 @@
 {
-  "name": "bus",
+  "name": "vue-music",
   "version": "1.0.0",
-  "description": "imitate chelaile with vue by 701",
+  "description": "imitate qq.music with vue by 701",
   "author": "rhb <1041763635@qq.com>",
   "private": true,
   "scripts": {
@@ -13,9 +13,13 @@
     "test": "npm run unit && npm run e2e"
   },
   "dependencies": {
+    "axios": "^0.16.2",
     "babel-runtime": "^6.23.0",
+    "better-scroll": "^0.2.4",
     "fastclick": "^1.0.6",
+    "jsonp": "^0.2.1",
     "vue": "^2.2.6",
+    "vue-lazyload": "^1.0.4",
     "vue-router": "^2.3.1"
   },
   "devDependencies": {
@@ -88,6 +92,6 @@
     "not ie <= 8"
   ],
   "main": "index.js",
-  "repository": "git@139.199.203.49:/home/repo/bus.git",
+  "repository": "git@github.com:githubmann/vue-music.git",
   "license": "MIT"
 }
