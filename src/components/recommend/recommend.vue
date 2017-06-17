@@ -7,7 +7,7 @@
            <slider v-if="recommends.length">
              <div v-for="item in recommends" class="item">
                <a class="item-img-container" :href="item.linkUrl">
-                 <img class='item-img needsclick' v-lazy="item.picUrl" alt="图片">
+                 <img class='item-img needsclick' :src="item.picUrl" alt="图片">
                </a>
              </div>
            </slider>
@@ -27,6 +27,9 @@
            </ul>
          </div>
        </div>
+        <div class="loading-container" v-show="!discList.length">
+          <loading></loading>
+        </div>
       </scroll>
     </div>
   </div>
@@ -36,6 +39,7 @@
   import{ERR_OK} from 'api/config.js'
   import Slider from 'base/slider/slider'
   import Scroll from 'base/scroll/scroll'
+  import Loading from 'base/loading/loading'
 
   export default {
     name: 'recommend',
@@ -73,7 +77,8 @@
     },
     components: {
       Slider,
-      Scroll
+      Scroll,
+      Loading
     }
   }
 </script>
