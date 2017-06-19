@@ -1,7 +1,7 @@
 <template>
-  <scroll class="listview" :data="data">
+  <scroll class="listview" :data="data" ref="listview">
     <ul>
-      <li v-for="group in data" class="list-group">
+      <li v-for="group in data" class="list-group" ref="listgroup">
         <h2 class="list-group-title">{{group.title}}</h2>
         <ul>
           <li v-for="item in group.items" class="list-group-item">
@@ -11,11 +11,30 @@
         </ul>
       </li>
     </ul>
+    <ul class="list-shortcut"
+        @touchstart="onShortcutTouchStart"
+        @touchmove.stop.prevent="onShortcutTouchMove">
+      <li v-for="(group, index) in data" class="item needsclick" :data-index="index">
+        {{group.title}}
+      </li>
+    </ul>
+    <div>
+    </div>
   </scroll>
 </template>
 <script>
   import Scroll from 'base/scroll/scroll'
+  import {getData} from 'common/js/dom'
+
+  const ANCHOR_HEIGHT = 18
+
   export default {
+    created() {
+      this.touch = {}
+      setTimeout(() => {
+        console.log(this.$refs)
+      }, 20)
+    },
     props: {
       data: {
         type: Array,
@@ -25,6 +44,29 @@
 
       }
     },
+    methods: {
+
+      onShortcutTouchMove(e) {
+        let firstTouch = e.touches[0]
+        this.touch.y2 = firstTouch.pageY
+        let delta = (this.touch.y2 - this.touch.y1) / ANCHOR_HEIGHT | 0 // touch之间的差值,向下取整
+        let anchorIndex = parseInt(this.touch.anchorIndex) + delta // 注意转换this.touch.anchorIndex
+        this._scrollTo(anchorIndex)
+      },
+      onShortcutTouchStart(e) {
+        let anchorIndex = getData(e.target, 'index')
+        let firstTouch = e.touches[0]
+        this.touch.y1 = firstTouch.pageY
+        this.touch.anchorIndex = anchorIndex
+
+        this._scrollTo(anchorIndex)
+      },
+      _scrollTo(index) {
+        this.$refs.listview.scrollToElement(this.$refs.listgroup[index], 0)
+
+      }
+    },
+    computed: {},
     components: {
       Scroll
     }
@@ -74,7 +116,30 @@
       .item
         padding 3px
         line-height 1
+        color $color-text-l
+        font-size $font-size-small
+        &.current
+          color $color-theme
+      .list-fixed
+        position absolute
+        top 0
+        left 0
+        width 100%
+        .fixed-tile
+          height 30px
+          line-height 30px
+          padding-left 20px
+          font-size $font-size-small
+          color $color-text-l
+          background $color-highlight-background
+      .loading-container
+        position absolute
+        width 100%
+        top 50%
+        transform translateY(-50%)
 
-
-
+    .nav-list
+      position fixed
+      top 20px
+      right 10px
 </style>

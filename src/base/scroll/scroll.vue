@@ -23,6 +23,7 @@
       }
     },
     mounted() {
+      console.log(this.$slots)
       setTimeout(() => {
         this._initScroll()
       }, 20)
@@ -36,6 +37,11 @@
           probeType: this.probeType,
           click: this.click
         })
+        this.scroll.on('touchend', (pos) => {
+          if (pos.y > 50) {
+            this.$emit('pullDown')
+          }
+        })
       },
       enable() {
         this.scroll && this.scroll.enable()
@@ -45,6 +51,12 @@
       },
       refresh() {
         this.scroll && this.scroll.refresh()
+      },
+      scrollToElement() {
+        this.scroll && this.scroll.scrollToElement.apply(this.scroll, arguments)
+      },
+      scrollTo() {
+        this.scroll && this.scroll.scrollTo.apply(this.scroll, arguments)
       }
     },
     watch: {
