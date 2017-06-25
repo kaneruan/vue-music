@@ -4,6 +4,12 @@
     <div class="text">Music</div>
   </div>
 </template>
+<script>
+export default {
+
+}
+</script>
+
 <style lang="stylus">
   @import "~common/stylus/variable.styl"
   @import "~common/stylus/mixin.styl"

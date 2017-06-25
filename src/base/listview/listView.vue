@@ -1,5 +1,11 @@
 <template>
-  <scroll class="listview" :data="data" ref="listview">
+  <scroll
+    class="listview"
+    :data="data"
+    ref="listview"
+    :listenScroll='listenScroll'
+    :probeType='probeType'
+    @scroll='scroll'>
     <ul>
       <li v-for="group in data" class="list-group" ref="listgroup">
         <h2 class="list-group-title">{{group.title}}</h2>
@@ -11,10 +17,12 @@
         </ul>
       </li>
     </ul>
-    <ul class="list-shortcut"
-        @touchstart="onShortcutTouchStart"
-        @touchmove.stop.prevent="onShortcutTouchMove">
-      <li v-for="(group, index) in data" class="item needsclick" :data-index="index">
+    <ul class="list-shortcut" @touchstart="onShortcutTouchStart" @touchmove.stop.prevent="onShortcutTouchMove">
+      <li
+        v-for="(group, index) in data"
+        class="item needsclick"
+        :class="{'current': currentIndex === index}"
+        :data-index="index">
         {{group.title}}
       </li>
     </ul>
@@ -23,54 +31,93 @@
   </scroll>
 </template>
 <script>
-  import Scroll from 'base/scroll/scroll'
-  import {getData} from 'common/js/dom'
+import Scroll from 'base/scroll/scroll'
+import { getData } from 'common/js/dom'
 
-  const ANCHOR_HEIGHT = 18
+const ANCHOR_HEIGHT = 18
 
-  export default {
-    created() {
-      this.touch = {}
+export default {
+  created() {
+    this.touch = {}
+    this.listenScroll = true
+    this.listHeight = []
+    this.probeType = 3
+  },
+  data() {
+    return {
+      scrollY: -1,
+      currentIndex: 0
+    }
+  },
+  props: {
+    data: {
+      type: Array,
+      default() {
+        return []
+      }
+
+    }
+  },
+  methods: {
+    onShortcutTouchMove(e) {
+      let firstTouch = e.touches[0]
+      this.touch.y2 = firstTouch.pageY
+      let delta = (this.touch.y2 - this.touch.y1) / ANCHOR_HEIGHT | 0 // touch之间的差值,向下取整
+      this.currentIndex = parseInt(this.touch.anchorIndex) + delta // 注意转换this.touch.anchorIndex
+      this._scrollTo(this.currentIndex)
+    },
+    onShortcutTouchStart(e) {
+      this.currentIndex = getData(e.target, 'index')
+      let firstTouch = e.touches[0]
+      this.touch.y1 = firstTouch.pageY
+      this.touch.anchorIndex = this.currentIndex
+
+      this._scrollTo(this.currentIndex)
+    },
+    scroll(pos) {
+      this.scrollY = pos.y
+    },
+    _scrollTo(index) {
+      this.$refs.listview.scrollToElement(this.$refs.listgroup[index], 0)
+    },
+    _calculateHeight() {
+      this.listHeight = []
+      const list = this.$refs.listgroup
+      let height = 0
+      this.listHeight.push(height)
+      for(let i = 0; i < list.length; i++) {
+        let item = list[i]
+        height += item.clientHeight
+        this.listHeight.push(height)
+      }
+    }
+  },
+  watch: {
+    data() {
       setTimeout(() => {
-        console.log(this.$refs)
+        this._calculateHeight()
       }, 20)
     },
-    props: {
-      data: {
-        type: Array,
-        default() {
-          return []
+    scrollY(newY) {
+      const listHeight = this.listHeight
+      for(let i = 0; i < listHeight.length; i++) {
+        let height1 = listHeight[i]
+        let height2 = listHeight[i+1]
+        if(!height2 || (-newY) > height1 && (-newY) < height2) {
+          this.currentIndex = i
+          return
+        } else {
+          this.currentIndex = 0
         }
-
       }
-    },
-    methods: {
 
-      onShortcutTouchMove(e) {
-        let firstTouch = e.touches[0]
-        this.touch.y2 = firstTouch.pageY
-        let delta = (this.touch.y2 - this.touch.y1) / ANCHOR_HEIGHT | 0 // touch之间的差值,向下取整
-        let anchorIndex = parseInt(this.touch.anchorIndex) + delta // 注意转换this.touch.anchorIndex
-        this._scrollTo(anchorIndex)
-      },
-      onShortcutTouchStart(e) {
-        let anchorIndex = getData(e.target, 'index')
-        let firstTouch = e.touches[0]
-        this.touch.y1 = firstTouch.pageY
-        this.touch.anchorIndex = anchorIndex
-
-        this._scrollTo(anchorIndex)
-      },
-      _scrollTo(index) {
-        this.$refs.listview.scrollToElement(this.$refs.listgroup[index], 0)
-
-      }
-    },
-    computed: {},
-    components: {
-      Scroll
     }
+  },
+  computed: {},
+  components: {
+    Scroll
   }
+}
 </script>
 <style lang="stylus">
   @import "~common/stylus/variable"
