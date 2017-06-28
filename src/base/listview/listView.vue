@@ -1,13 +1,7 @@
 <template>
-  <scroll
-    class="listview"
-    :data="data"
-    ref="listview"
-    :listenScroll='listenScroll'
-    :probeType='probeType'
-    @scroll='scroll'>
+  <scroll class="listview" :data="data" ref="listview" :listenScroll='listenScroll' :probeType='probeType' @scroll='scroll'>
     <ul>
-      <li v-for="group in data" class="list-group" ref="listgroup">
+      <li v-for="(group,groupIndex) in data" class="list-group" :class='{fixedTitleContainer: currentIndex === groupIndex}' ref="listgroup">
         <h2 class="list-group-title">{{group.title}}</h2>
         <ul>
           <li v-for="item in group.items" class="list-group-item">
@@ -18,14 +12,11 @@
       </li>
     </ul>
     <ul class="list-shortcut" @touchstart="onShortcutTouchStart" @touchmove.stop.prevent="onShortcutTouchMove">
-      <li
-        v-for="(group, index) in data"
-        class="item needsclick"
-        :class="{'current': currentIndex === index}"
-        :data-index="index">
+      <li v-for="(group, index) in data" class="item needsclick" :class="{'current': currentIndex === index}" :data-index="index">
         {{group.title}}
       </li>
     </ul>
+    <h2 v-show='currentTitle' class="list-group-title fixed-title">{{currentTitle}}</h2>
     <div>
     </div>
   </scroll>
@@ -59,6 +50,7 @@ export default {
     }
   },
   methods: {
+    // 计算滚动的容器元素delta
     onShortcutTouchMove(e) {
       let firstTouch = e.touches[0]
       this.touch.y2 = firstTouch.pageY
@@ -66,6 +58,7 @@ export default {
       this.currentIndex = parseInt(this.touch.anchorIndex) + delta // 注意转换this.touch.anchorIndex
       this._scrollTo(this.currentIndex)
     },
+    // 计算第一次滚动到的地方
     onShortcutTouchStart(e) {
       this.currentIndex = getData(e.target, 'index')
       let firstTouch = e.touches[0]
@@ -77,6 +70,7 @@ export default {
     scroll(pos) {
       this.scrollY = pos.y
     },
+    // 滚动到某一个元素
     _scrollTo(index) {
       this.$refs.listview.scrollToElement(this.$refs.listgroup[index], 0)
     },
@@ -85,7 +79,7 @@ export default {
       const list = this.$refs.listgroup
       let height = 0
       this.listHeight.push(height)
-      for(let i = 0; i < list.length; i++) {
+      for (let i = 0; i < list.length; i++) {
         let item = list[i]
         height += item.clientHeight
         this.listHeight.push(height)
@@ -100,20 +94,23 @@ export default {
     },
     scrollY(newY) {
       const listHeight = this.listHeight
-      for(let i = 0; i < listHeight.length; i++) {
+      for (let i = 0; i < listHeight.length; i++) {
         let height1 = listHeight[i]
-        let height2 = listHeight[i+1]
-        if(!height2 || (-newY) > height1 && (-newY) < height2) {
+        let height2 = listHeight[i + 1]
+        if (!height2 || (-newY) > height1 && (-newY) < height2) {
           this.currentIndex = i
           return
         } else {
           this.currentIndex = 0
         }
       }
-
+    },
+  },
+  computed: {
+    currentTitle() {
+      return this.data && this.data[this.currentIndex] && this.data[this.currentIndex].title
     }
   },
-  computed: {},
   components: {
     Scroll
   }
@@ -189,4 +186,15 @@ export default {
       position fixed
       top 20px
       right 10px
+    .fixed-title
+      position fixed
+      top 85px
+      left 0
+      right 0
+      height 30px
+      line-height 30px
+      padding-left 20px
+      font-size $font-size-small
+      color $color-text-l
+      background $color-highlight-background
 </style>
