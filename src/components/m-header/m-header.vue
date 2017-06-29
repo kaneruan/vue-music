@@ -1,6 +1,6 @@
 <template>
   <div class="m-header">
-    <div class="icon"></div>
+    <div class="iconfont icon-music"></div>
     <div class="text">Music</div>
   </div>
 </template>
@@ -19,15 +19,13 @@ export default {
     text-align: center
     color $color-theme
     font-size: 0
-    .icon
+    .icon-music
       display: inline-block
-      vertical-align: top
-      margin-top: 6px
-      width 30px
-      height 30px
-      margin-left 9px
-      bg-image('logo')
-      background-size 30px 32px
+      height 44px
+      line-height 44px
+      margin-right 1em
+      font-size 20px
+      vertical-align middle
     .text
       display inline-block
       font-size $font-size-large-x
