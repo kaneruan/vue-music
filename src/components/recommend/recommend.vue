@@ -68,7 +68,7 @@
           }
         })
       },
-      goTO(url) {
+      goTo(url) {
         if (url) {
           window.location.href = url
           window.location.reload()

@@ -4,7 +4,7 @@
       <li v-for="(group,groupIndex) in data" class="list-group" :class='{fixedTitleContainer: currentIndex === groupIndex}' ref="listgroup">
         <h2 class="list-group-title">{{group.title}}</h2>
         <ul>
-          <li v-for="item in group.items" class="list-group-item">
+          <li v-for="item in group.items" @click='selectItem(item)' class="list-group-item">
             <img class="avatar" v-lazy="item.avatar" alt="图片">
             <span class="name">{{item.name}}</span>
           </li>
@@ -50,6 +50,9 @@ export default {
     }
   },
   methods: {
+    selectItem(item) {
+      this.$emit('selectItem', item)
+    },
     // 计算滚动的容器元素delta
     onShortcutTouchMove(e) {
       let firstTouch = e.touches[0]
