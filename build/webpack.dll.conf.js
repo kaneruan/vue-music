@@ -1,27 +1,3 @@
-// var webpack = require('webpack')
-// var path = require('path')
-// module.exports = {
-//     entry: {
-//         lib: ['vue', 'better-scroll', 'vue-router', 'fastclick']
-//     },
-//     output: {
-//         path: path.resolve(__dirname, '../dist'),
-//         filename: '[name].js',
-//         library: '[name]'
-//     },
-//     plugins: [
-//         new webpack.DllPlugin({
-//             context: __dirname,
-//             path: 'manifest.json',
-//             name: '[name]'
-//         }),
-//         new webpack.optimize.UglifyJsPlugin({
-//             compress: {
-//                 warnings: false
-//             }
-//         })
-//     ]
-// }
 const path = require('path');
 const webpack = require('webpack');
 
