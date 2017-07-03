@@ -5,16 +5,18 @@ import loading from 'common/image/logo@2x.png'
 import fastclick from 'fastclick'
 import router from './router/index'
 import VueLazyLoad from 'vue-lazyload'
+import store from 'store/index.js'
 
 import 'common/stylus/index.styl'
 
 fastclick.attach(document.body)
 Vue.use(VueLazyLoad, {
-  loading
+    loading
 })
 
 new Vue({
-  el: '#app',
-  render: h => h(App),
-  router
+    el: '#app',
+    render: h => h(App),
+    router,
+    store
 })
