@@ -10,6 +10,7 @@ export default class Song {
         this.url = url
     }
 }
+// 工厂方法
 const IMG_PRE_URL = 'https//y.gtimg.cn/music/photo_new/T002R300x300M000'
 const SONG_PRE_URL = 'http://ws.stream.qqmusic.qq.com/'
 export function createSong(musicData) {
