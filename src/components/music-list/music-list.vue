@@ -3,11 +3,12 @@
     <div class="back">
       <i class="icon-back"></i>
     </div>
-    <h1 class="title" v-html="title"></h1>
+    <h1 class="title" v-html="title" ref='title'></h1>
     <div class="bg-image" :style='bgStyle' ref='bgImage'>
       <div class="filter"></div>
     </div>
-    <scroll :data='songs' class="list" ref='list' :listenScroll='true' :probeType='3' @scroll='scroll'>
+    <div class="bg-layer" ref="bgLayer"></div>
+    <scroll :data='songs' class="list" ref='list' :listenScroll='listenScroll' :probeType='probeType' @scroll='scroll' :momentum='momentum'>
       <div class="song-list-wrapper">
         <song-list :songs='songs'></song-list>
       </div>
@@ -34,6 +35,11 @@ export default {
       default: ''
     }
   },
+  data() {
+    return {
+      scrollY: 0
+    }
+  },
   computed: {
     bgStyle() {
       return `background-image: url(${this.bgImage})`
@@ -41,38 +47,48 @@ export default {
   },
   methods: {
     scroll(pos) {
-      let bgImageHeight =  this.$refs.bgImage.clientHeight
-      let bgImageStyle =  this.$refs.bgImage.style
-      if(bgImageHeight) {
-        bgImageStyle.paddingTop = this.$refs.list.$el.style.top = this._getTopPx(this._listTop + pos.y)
-      }
-      if(pos.y > 25 && !bgImageHeight) {
-        this.$refs.bgImage.style.paddingTop = '70%'
-        this.$nextTick(() => {
-          this.$refs.list.$el.style.top = `${this.$refs.bgImage.clientHeight}px`
-        })
-      }
-    },
-    _getTopPx(val) {
-      val = parseInt(val)
-      if(val < 0) {
-        return `0px`
-      } else if(val > 0){
-        return `${val}px`
-      } else {
-        console.error('parameter must be number')
-      }
+      this.scrollY = pos.y
     }
+  },
+  created() {
+    this.probeType = 3
+    this.listenScroll = true
+    this.momentum = false
   },
   mounted() {
     this.$refs.list.$el.style.top = `${this.$refs.bgImage.clientHeight}px`
-
-    this._listTop = parseInt(this.$refs.list.$el.style.top.slice(0, -2))
+    this._listTop = parseInt(this.$refs.list.$el.style.top.slice(0, -2)) // list初始化时的值
+    this._bgImageHeight = this.$refs.bgImage.clientHeight // bgImage初始化的值
+    this._titleHeight = this.$refs.title.clientHeight
   },
   components: {
     Scroll,
     SongList,
     Loading
+  },
+  watch: {
+    scrollY(newY) {
+      this.$refs.bgImage.style['transform'] = `scale(1)`
+      this.$refs.bgImage.style['webkit-transform'] = `scale(1)`
+      if (-newY > (this._bgImageHeight - this._titleHeight)) {
+        this.$refs.title.style.zIndex = '1000'
+        this.$refs.bgImage.style.zIndex = '999'
+        this.$refs.bgImage.style.paddingTop = `${this._titleHeight}px`
+      } else if (newY > 0){
+        this.$refs.title.style.zIndex = '1000'
+        this.$refs.bgImage.style.zIndex = '999'
+        let scale = 1 + Math.abs(newY / this._bgImageHeight)
+        this.$refs.bgImage.style['transform'] = `scale(${scale})`
+        this.$refs.bgImage.style['webkit-transform'] = `scale(${scale})`
+      } else {
+        this.$refs.bgImage.style.paddingTop = '70%'
+        this.$refs.title.style.zIndex = '40'
+        this.$refs.bgImage.style.zIndex = '0'
+        this.$refs.bgLayer.style.height = `${-newY + 1}px`
+        this.$refs.bgLayer.style['transform'] = `translate3d(0, ${newY}px, 0)`
+        this.$refs.bgLayer.style['webkit-transform'] = `translate3d(0, ${newY}px, 0)`
+      }
+    }
   }
 }
 </script>
@@ -121,12 +137,14 @@ export default {
       position absolute
       bottom 20px
       z-index 50
+  .bg-layer
+    position  relative
+    background-color $color-background
   .list
     position absolute
     bottom 0
     left 0
     right 0
-    overflow hidden
     .song-list-wrapper
       overflow hidden
 </style>
