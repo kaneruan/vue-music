@@ -23,6 +23,10 @@
       listenScroll: {
         type: Boolean,
         default:false
+      },
+      momentum: {
+        type: Boolean,
+        default:true
       }
     },
     mounted() {
@@ -38,7 +42,8 @@
         }
         this.scroll = new BScroll(this.$refs.wrapper, {
           probeType: this.probeType,
-          click: this.click
+          click: this.click,
+          momentum: this.momentum
         })
         this.scroll.on('touchend', (pos) => {
           if (pos.y > 50) {
