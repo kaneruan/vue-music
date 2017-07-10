@@ -20,6 +20,9 @@
 import Scroll from 'base/scroll/scroll'
 import SongList from 'base/song-list/song-list'
 import Loading from 'base/loading/loading'
+import { prefixStyle } from 'common/js/dom'
+
+const transform = prefixStyle('transform')
 export default {
   props: {
     bgImage: {
@@ -68,25 +71,22 @@ export default {
   },
   watch: {
     scrollY(newY) {
-      this.$refs.bgImage.style['transform'] = `scale(1)`
-      this.$refs.bgImage.style['webkit-transform'] = `scale(1)`
+      this.$refs.bgImage.style[transform] = `scale(1)`
       if (-newY > (this._bgImageHeight - this._titleHeight)) {
         this.$refs.title.style.zIndex = '1000'
         this.$refs.bgImage.style.zIndex = '999'
         this.$refs.bgImage.style.paddingTop = `${this._titleHeight}px`
-      } else if (newY > 0){
+      } else if (newY > 0) {
         this.$refs.title.style.zIndex = '1000'
         this.$refs.bgImage.style.zIndex = '999'
         let scale = 1 + Math.abs(newY / this._bgImageHeight)
-        this.$refs.bgImage.style['transform'] = `scale(${scale})`
-        this.$refs.bgImage.style['webkit-transform'] = `scale(${scale})`
+        this.$refs.bgImage.style[transform] = `scale(${scale})`
       } else {
         this.$refs.bgImage.style.paddingTop = '70%'
         this.$refs.title.style.zIndex = '40'
         this.$refs.bgImage.style.zIndex = '0'
         this.$refs.bgLayer.style.height = `${-newY + 1}px`
-        this.$refs.bgLayer.style['transform'] = `translate3d(0, ${newY}px, 0)`
-        this.$refs.bgLayer.style['webkit-transform'] = `translate3d(0, ${newY}px, 0)`
+        this.$refs.bgLayer.style[transform] = `translate3d(0, ${newY}px, 0)`
       }
     }
   }
