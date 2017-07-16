@@ -29,12 +29,12 @@ let vendor = (() => {
     }
 
     for (let key in transform) {
-        if (elementStyle(transform[key]) !== undefined) {
+        if (elementStyle[transform[key]] !== undefined) {
             return key
         }
     }
     return false
-})
+})()
 
 export function prefixStyle(style) {
     if (vendor === false) {

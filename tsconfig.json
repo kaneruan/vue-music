@@ -1,0 +1,31 @@
+{
+    "compilerOptions": {
+        "baseUrl": "/",
+        "module": "es6",
+        "charset": "utf-8",
+        "target": "esnext",
+        "moduleResolution": "node",
+        "experimentalDecorators": true,
+        "noImplicitAny": false,
+        "allowSyntheticDefaultImports": true,
+        "lib": [
+            "dom",
+            "esnext"
+        ],
+        "paths": {
+            "api": ["src/api/**/*"],
+            "base": ["src/base/**/*"],
+            "common": ["src/common/**/*"],
+            "components": ["src/component/**/*"],
+            "router": ["src/router/**/*"],
+            "store": ["src/store/**/*"]
+        }
+    },
+    "include": [
+        "./src/**/*"
+    ],
+    "exclude": [
+        "node_modules"
+    ],
+    "compileOnSave": true
+}

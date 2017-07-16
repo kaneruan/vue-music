@@ -40,6 +40,10 @@
       padding 5px 40px
       .name
         font-size $font-size-medium-x
+        color: $color-text
         padding-bottom 4px
+      .desc
+        font-size $font-size-medium
+        color: $color-text-l
 </style>
 
