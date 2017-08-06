@@ -1,7 +1,7 @@
 <template>
   <div class="music-list">
     <div class="back">
-      <i class="icon-back"></i>
+      <i class="icon-back" @click="$router.go(-1)"></i>
     </div>
     <h1 class="title" v-html="title" ref='title'></h1>
     <div class="bg-image" :style='bgStyle' ref='bgImage'>
@@ -10,7 +10,7 @@
     <div class="bg-layer" ref="bgLayer"></div>
     <scroll :data='songs' class="list" ref='list' :listenScroll='listenScroll' :probeType='probeType' @scroll='scroll' :momentum='momentum'>
       <div class="song-list-wrapper">
-        <song-list :songs='songs'></song-list>
+        <song-list :songs='songs' @select='selectItem'></song-list>
       </div>
     </scroll>
     <loading v-show="!songs.length"></loading>
@@ -21,8 +21,10 @@ import Scroll from 'base/scroll/scroll'
 import SongList from 'base/song-list/song-list'
 import Loading from 'base/loading/loading'
 import { prefixStyle } from 'common/js/dom'
+import {mapActions} from 'vuex'
 
 const transform = prefixStyle('transform')
+const backdrop = prefixStyle('backdrop-filter')
 export default {
   props: {
     bgImage: {
@@ -51,7 +53,17 @@ export default {
   methods: {
     scroll(pos) {
       this.scrollY = pos.y
-    }
+    },
+    selectItem(item, index) {
+      this.selectPlay({
+        list: this.songs,
+        index
+
+      })
+    },
+    ...mapActions([
+      'selectPlay'
+    ])
   },
   created() {
     this.probeType = 3
@@ -86,6 +98,7 @@ export default {
         this.$refs.title.style.zIndex = '40'
         this.$refs.bgImage.style.zIndex = '0'
         this.$refs.bgLayer.style.height = `${-newY + 1}px`
+        console.log(transform)
         this.$refs.bgLayer.style[transform] = `translate3d(0, ${newY}px, 0)`
       }
     }
@@ -112,9 +125,13 @@ export default {
       z-index 50
       .icon-back
         display block
+        margin 10px
         padding 10px
         font-size $font-size-large-x
         color $color-theme
+        vertical-align middle
+        background-image url('./back.svg')
+        background-size cover
   .title
     position absolute
     top 0
